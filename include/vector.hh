@@ -27,6 +27,8 @@ public:
 
     double &operator [] (int index);
 
+    bool operator ==( const Vector &v) const;
+
 };
 
 std::ostream &operator << (std::ostream &out, Vector const &tmp);
@@ -147,7 +149,7 @@ Vector Vector::operator / (const double &tmp) {
  */
 const double &Vector::operator [] (int index) const {
     if (index < 0 || index >= SIZE) {
-        std::cerr << "Error: Wektor jest poza zasiegiem!" << std::endl;
+        throw "Error: Wektor jest poza zasiegiem!" ;
     } // lepiej byłoby rzucić wyjątkiem stdexcept
     return size[index];
 }
@@ -191,4 +193,14 @@ std::istream &operator >> (std::istream &in, Vector &tmp) {
     }
     std::cout << std::endl;
     return in;
+}
+
+
+bool Vector::operator ==( const Vector &v) const
+{
+    for(int i=0; i<SIZE;i++)
+    if(size[i]!=v[i])
+        return false;
+
+    return true;
 }

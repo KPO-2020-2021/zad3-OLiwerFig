@@ -2,9 +2,10 @@
 
 #include "size.hh"
 #include "vector.hh"
+#include "rectangle.hh"
 #include <iostream>
 #include <cstdlib>
-
+#include <cmath>
 class Matrix {
 
 private:
@@ -15,10 +16,11 @@ public:
 
     Matrix();                               // Konstruktor klasy
 
-    Vector operator * (Vector tmp);           // Operator mnożenia przez wektor
+    Vector operator * (  Vector tmp);           // Operator mnożenia przez wektor
+    rectangle operator * ( rectangle tmp);           // Operator mnożenia przez wektor
 
     Matrix operator + (Matrix tmp);
-
+void rotation(double angle);
     double  &operator () (unsigned int row, unsigned int column);
     
     const double &operator () (unsigned int row, unsigned int column) const;
@@ -28,6 +30,24 @@ std::istream &operator>>(std::istream &in, Matrix &mat);
 
 std::ostream &operator<<(std::ostream &out, Matrix const &mat);
 
+
+void Matrix::rotation(double angle)
+{
+    double rad = angle * M_PI / 180;
+    value[0][0] = cos(rad);
+    value[0][1] = -sin(rad);
+    value[1][0] = sin(rad);
+    value[1][1] = cos(rad);
+}
+
+rectangle Matrix::operator * ( rectangle tmp)
+{
+    rectangle wynik;
+      for (int j = 0; j < 4; ++j) {
+            wynik[j] = *this* tmp[j];
+        }
+        return wynik;
+}
 /******************************************************************************
  |  Konstruktor klasy Matrix.                                                 |
  |  Argumenty:                                                                |
@@ -69,7 +89,7 @@ Matrix::Matrix(double tmp[SIZE][SIZE]) {
  |      Iloczyn dwoch skladnikow przekazanych jako wektor.                    |
  */
 
-Vector Matrix::operator * (Vector tmp) {
+Vector Matrix::operator * ( Vector tmp) {
     Vector result;
     for (int i = 0; i < SIZE; ++i) {
         for (int j = 0; j < SIZE; ++j) {
@@ -91,12 +111,12 @@ Vector Matrix::operator * (Vector tmp) {
 double &Matrix::operator()(unsigned int row, unsigned int column) {
 
     if (row >= SIZE) {
-        std::cout << "Error: Macierz jest poza zasiegiem"; 
+     throw "Error: Wektor jest poza zasiegiem!" ;
         exit(0); // lepiej byłoby rzucić wyjątkiem stdexcept
     }
 
     if (column >= SIZE) {
-        std::cout << "Error: Macierz jest poza zasiegiem";
+   throw "Error: Wektor jest poza zasiegiem!" ;
         exit(0); // lepiej byłoby rzucić wyjątkiem stdexcept
     }
 
@@ -115,12 +135,12 @@ double &Matrix::operator()(unsigned int row, unsigned int column) {
 const double &Matrix::operator () (unsigned int row, unsigned int column) const {
 
     if (row >= SIZE) {
-        std::cout << "Error: Macierz jest poza zasiegiem";
+      throw "Error: Wektor jest poza zasiegiem!" ;
         exit(0); // lepiej byłoby rzucić wyjątkiem stdexcept
     }
 
     if (column >= SIZE) {
-        std::cout << "Error: Macierz jest poza zasiegiem";
+       throw "Error: Wektor jest poza zasiegiem!" ;
         exit(0); // lepiej byłoby rzucić wyjątkiem stdexcept
     }
 
